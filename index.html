@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Urban Open | Home</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="web3.css">
+</head>
+<body>
+  <header>
+    <div class="logo"><h1>THE URBAN OPEN</h1></div>
+    <nav>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html" class="active">Home</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="schedule.html">Schedule</a>
+        <a href="players.html">Players</a>
+        <a href="registration.html">Registration</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <button id="theme-toggle">🌙 Dark</button>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>STREET SPIRIT. PROFESSIONAL GRIT.</h1>
+    <p>The city's premier competitive tournament begins in:</p>
+    <div id="timer-container">
+      <div class="time-box"><span id="days">00</span><p>Days</p></div>
+      <div class="time-box"><span id="hours">00</span><p>Hours</p></div>
+      <div class="time-box"><span id="minutes">00</span><p>Mins</p></div>
+      <div class="time-box"><span id="seconds">00</span><p>Secs</p></div>
+    </div>
+    <a href="registration.html" class="btn">Register Now</a>
+  </section>
+
+  <div class="container">
+    <div class="grid">
+      <div class="card">
+        <h3 style="color: var(--accent-blue); margin-bottom:12px;">Pro Leaderboard</h3>
+        <p>Track real-time rankings and point splits for the top 50 contenders.</p>
+        <a href="leaderboard.html" style="color: var(--win-gold); text-decoration: none; font-weight: bold; display:inline-block; margin-top:16px;">View Standings →</a>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--win-gold); margin-bottom:12px;">Tournament Map</h3>
+        <p>Explore the arena layouts and strategic zones for this season.</p>
+        <a href="schedule.html" style="color: var(--win-gold); text-decoration: none; font-weight: bold; display:inline-block; margin-top:16px;">See Schedule →</a>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--action-orange); margin-bottom:12px;">Player Profiles</h3>
+        <p>Detailed stats, history, and gear-sets of our elite athletes.</p>
+        <a href="players.html" style="color: var(--win-gold); text-decoration: none; font-weight: bold; display:inline-block; margin-top:16px;">Browse Players →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>The Urban Open</h3>
+        <p>Pushing the boundaries of talent since 2024.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="schedule.html">Schedule</a></li>
+          <li><a href="players.html">Players</a></li>
+          <li><a href="registration.html">Registration</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <p>Email: info@urbanopen.com</p>
+      </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 The Urban Open Tournament. All Rights Reserved.</div>
+  </footer>
+
+  <script>
+    // Countdown Logic
+    const countDownDate = new Date("Oct 15, 2026 00:00:00").getTime();
+    const x = setInterval(function() {
+      const now = new Date().getTime();
+      const distance = countDownDate - now;
+      if (distance < 0) { clearInterval(x); return; }
+      document.getElementById("days").innerHTML    = Math.floor(distance / (1000 * 60 * 60 * 24));
+      document.getElementById("hours").innerHTML   = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      document.getElementById("minutes").innerHTML = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      document.getElementById("seconds").innerHTML = Math.floor((distance % (1000 * 60)) / 1000);
+    }, 1000);
+  </script>
+
+  <script src="theme.js"></script>
+  <script src="auth.js"></script>
+  <script src="nav-init.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => Auth.injectNavAuth());
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+  <script src="metamask.js"></script>
+</body>
+</html>

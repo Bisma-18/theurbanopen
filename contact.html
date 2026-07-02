@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | The Urban Open</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="web3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <style>
+        /* PROFESSIONAL SPACING + ALIGNMENT */
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        /* FORM CARD */
+        .contact-form {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .contact-form input,
+        .contact-form select,
+        .contact-form textarea {
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        /* RIGHT PANEL */
+        .venue-info {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        #map {
+            height: 250px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        /* LEADERBOARD */
+        #leaderboard {
+            list-style: none;
+            padding: 0;
+        }
+
+        #leaderboard li {
+            padding: 10px;
+            margin: 6px 0;
+            background: rgba(0,0,0,0.05);
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* CHATBOT */
+        #chatbox {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 270px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        #chatbox h4 {
+            margin: 0;
+            padding: 10px;
+            background: var(--action-orange);
+            color: white;
+            text-align: center;
+        }
+
+        #chatlog {
+            height: 140px;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        .chat-input {
+            display: flex;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text-color);
+        }
+
+        .chat-input button {
+            background: var(--action-orange);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 768px) {
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo"><h1>THE URBAN OPEN</h1></div>
+    <nav>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="schedule.html">Schedule</a>
+        <a href="players.html">Players</a>
+        <a href="registration.html">Registration</a>
+        <a href="contact.html" class="active">Contact</a>
+      </div>
+      <button id="theme-toggle">🌙 Dark</button>
+    </nav>
+  </header>
+
+<div class="container">
+
+    <h1 style="text-align:center; margin-top:20px;">Contact & Registration</h1>
+
+    <div class="contact-wrapper">
+
+        <div class="contact-form">
+            <h2 style="color: var(--action-orange)">Register</h2>
+            <p id="form-msg">Fill the form to participate.</p>
+
+            <form id="regForm">
+                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="Email" required>
+
+                <select required>
+                    <option value="">Select Category</option>
+                    <option>Pro</option>
+                    <option>Amateur</option>
+                </select>
+
+                <textarea rows="4" placeholder="Message"></textarea>
+
+                <button class="btn">Submit</button>
+            </form>
+        </div>
+
+        <div class="venue-info">
+
+            <h3>The Arena</h3>
+            <p><b>Location:</b> Metro Grand Plaza</p>
+
+            <div id="map"></div>
+
+            <h3>Leaderboard</h3>
+            <ul id="leaderboard"></ul>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="chatbox">
+    <h4>Chat</h4>
+    <div id="chatlog"></div>
+    <div class="chat-input">
+        <input type="text" id="userInput" placeholder="Type a message...">
+        <button onclick="reply()">Send</button>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-bottom">&copy; 2026 The Urban Open</div>
+</footer>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    // FORM
+    document.getElementById('regForm').addEventListener('submit', function(e){
+        e.preventDefault();
+        document.getElementById('form-msg').innerHTML="✅ Submitted!";
+        this.reset();
+    });
+
+    // THEME
+    const toggleBtn = document.getElementById('theme-toggle');
+    const body = document.documentElement;
+
+    if(localStorage.getItem('theme')==='dark'){
+        body.setAttribute('data-theme','dark');
+        toggleBtn.textContent='☀️ Light Mode';
+    }
+
+    toggleBtn.onclick=()=>{
+        let theme=body.getAttribute('data-theme')==='dark'?'light':'dark';
+        body.setAttribute('data-theme',theme);
+        localStorage.setItem('theme',theme);
+        toggleBtn.textContent=theme==='dark'?'☀️ Light Mode':'🌙 Dark Mode';
+    };
+
+    // MAP
+    var map=L.map('map').setView([33.6844,73.0479],13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    L.marker([33.6844,73.0479]).addTo(map);
+
+    // ENHANCED CHATBOT LOGIC
+    function reply() {
+        let input = document.getElementById("userInput").value;
+        let log = document.getElementById("chatlog");
+        if (input === "") return;
+
+        // User Message
+        log.innerHTML += `<p style="margin-bottom:5px;"><b>You:</b> ${input}</p>`;
+        document.getElementById("userInput").value = "";
+        log.scrollTop = log.scrollHeight;
+
+        // Bot Thinking Delay
+        setTimeout(() => {
+            const responses = [
+                "We'll contact you soon!",
+                "Thanks for reaching out to The Urban Open!",
+                "Our team is checking the arena schedule for you.",
+                "Registration queries usually take 24 hours to process.",
+                "The Arena is located at Metro Grand Plaza. See the map above!"
+            ];
+            let botRes = responses[Math.floor(Math.random() * responses.length)];
+            log.innerHTML += `<p style="margin-bottom:5px; color:var(--accent-blue);"><b>Bot:</b> ${botRes}</p>`;
+            log.scrollTop = log.scrollHeight;
+        }, 1000);
+    }
+
+    // LEADERBOARD
+    const players=[
+        {name:"Player1",score:120},
+        {name:"Player2",score:110},
+        {name:"Player3",score:95}
+    ];
+
+    const list=document.getElementById("leaderboard");
+    players.forEach(p=>{
+        let li=document.createElement("li");
+        li.innerHTML=`${p.name} <b>${p.score}</b>`;
+        list.appendChild(li);
+    });
+</script>
+
+  <script src="theme.js"></script>
+  <script src="auth.js"></script>
+  <script src="nav-init.js"></script>
+</body>
+</html>

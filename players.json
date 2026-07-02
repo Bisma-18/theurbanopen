@@ -1,0 +1,66 @@
+[
+  {
+    "name": "Alex 'Ace' Rivera",
+    "game": "Valorant",
+    "rank": "#1",
+    "score": 2500,
+    "topRank": true,
+    "image":"https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=400&fit=crop"
+  },
+  {
+    "name": "Jordan 'Ghost' Smith",
+    "game": "PUBG",
+    "rank": "#2",
+    "score": 3200,
+    "topRank": false,
+    "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=400&fit=crop"
+  },
+  {
+    "name": "Sarah 'Nova' Chen",
+    "game": "Fortnite",
+    "rank": "#3",
+    "score": 2800,
+    "topRank": false,
+    "image":"https://images.unsplash.com/photo-1542751110-97427bbecf20?w=400&h=400&fit=crop"
+  },
+  {
+    "name": "Marcus 'Viper' Reed",
+    "game": "Apex Legends",
+    "rank": "#4",
+    "score": 2100,
+    "topRank": false,
+    "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=400&q=80"
+  },
+  {
+    "name": "Elena 'Frost' Ivanova",
+    "game": "Valorant",
+    "rank": "#5",
+    "score": 1950,
+    "topRank": false,
+    "image": "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=400&q=80"
+  },
+  {
+    "name": "Liam 'Titan' O'Brian",
+    "game": "LoL",
+    "rank": "#6",
+    "score": 1800,
+    "topRank": false,
+    "image": "https://images.unsplash.com/photo-1603481546238-487240415921?auto=format&fit=crop&w=400&q=80"
+  },
+  {
+    "name": "Zoe 'Matrix' Kim",
+    "game": "Overwatch 2",
+    "rank": "#7",
+    "score": 1750,
+    "topRank": false,
+    "image": "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&w=400&q=80"  
+  },
+  {
+    "name": "Ray 'Static' Miller",
+    "game": "PUBG",
+    "rank": "#8",
+    "score": 1600,
+    "topRank": false,
+    "image": "https://images.unsplash.com/photo-1611605698335-8b1569810432?auto=format&fit=crop&w=400&q=80"
+  }
+]

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | The Urban Open</title>
+  <script src="auth.js"></script>
+  <script>
+    // This file now acts as a smart redirect gate.
+    // It replaces the old single-page admin with the new dashboard.
+    document.addEventListener('DOMContentLoaded', () => {
+      if (Auth.isAdmin()) {
+        window.location.replace('admin-dashboard.html');
+      } else {
+        window.location.replace('admin-login.html');
+      }
+    });
+  </script>
+  <style>
+    body { background:#0b0e14; display:flex; align-items:center; justify-content:center; min-height:100vh; font-family:sans-serif; color:#fff; }
+    .msg { text-align:center; opacity:0.5; }
+  </style>
+</head>
+<body>
+  <div class="msg">Redirecting to Admin Panel…</div>
+</body>
+</html>

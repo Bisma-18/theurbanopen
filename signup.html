@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | The Urban Open</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="web3.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo"><h1>THE URBAN OPEN</h1></div>
+    <nav>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="schedule.html">Schedule</a>
+        <a href="players.html">Players</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <button id="theme-toggle">🌙 Dark</button>
+    </nav>
+  </header>
+
+  <div class="auth-page-wrapper">
+    <div class="auth-card" style="max-width:520px;">
+      <h2>Join the Arena</h2>
+      <p class="auth-subtitle">Create your Urban Open athlete account</p>
+
+      <form id="signupForm" class="decongested-form" novalidate>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div>
+            <label class="form-label">First Name</label>
+            <input type="text" id="fname" placeholder="First name" autocomplete="given-name">
+            <span id="fnameErr" class="error"></span>
+          </div>
+          <div>
+            <label class="form-label">Last Name</label>
+            <input type="text" id="lname" placeholder="Last name" autocomplete="family-name">
+            <span id="lnameErr" class="error"></span>
+          </div>
+        </div>
+
+        <label class="form-label">Age</label>
+        <input type="number" id="age" placeholder="Your age" min="13" max="100">
+        <span id="ageErr" class="error"></span>
+
+        <label class="form-label">Email Address</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+        <span id="emailErr" class="error"></span>
+
+        <label class="form-label">Password</label>
+        <div class="pass-wrapper">
+          <input type="password" id="password" placeholder="Create a password" autocomplete="new-password">
+          <span id="togglePass" class="toggle-emoji">🙈</span>
+        </div>
+        <div class="strength-container"><div id="strength-bar"></div></div>
+        <span id="passErr" class="error"></span>
+
+        <label class="form-label">Confirm Password</label>
+        <div class="pass-wrapper">
+          <input type="password" id="confirmPassword" placeholder="Repeat your password" autocomplete="new-password">
+          <span id="togglePass2" class="toggle-emoji">🙈</span>
+        </div>
+        <span id="matchErr" class="error"></span>
+
+        <button type="submit" class="btn" style="width:100%; margin-top:8px;">Create Account</button>
+      </form>
+
+      <div class="auth-footer">
+        Already have an account? <a href="login.html">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="theme.js"></script>
+  <script src="auth.js"></script>
+  <script src="nav-init.js"></script>
+  <script>
+    if (Auth.isLoggedIn()) window.location.href = 'index.html';
+    document.addEventListener('DOMContentLoaded', () => Auth.injectNavAuth());
+
+    // Toggle password visibility
+    function makeToggle(toggleId, inputId) {
+      document.getElementById(toggleId).addEventListener('click', function() {
+        const p = document.getElementById(inputId);
+        const isPass = p.type === 'password';
+        p.type = isPass ? 'text' : 'password';
+        this.textContent = isPass ? '👁️' : '🙈';
+      });
+    }
+    makeToggle('togglePass', 'password');
+    makeToggle('togglePass2', 'confirmPassword');
+
+    // Password strength
+    document.getElementById('password').addEventListener('input', function() {
+      const bar = document.getElementById('strength-bar');
+      const v = this.value;
+      bar.className = '';
+      if (!v) return;
+      if (v.length < 6) bar.classList.add('weak');
+      else if (v.length < 10) bar.classList.add('medium');
+      else bar.classList.add('strong');
+    });
+
+    // Form submit
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      let valid = true;
+
+      const clearAll = () => ['fnameErr','lnameErr','ageErr','emailErr','passErr','matchErr']
+        .forEach(id => document.getElementById(id).textContent = '');
+      clearAll();
+
+      const fname = document.getElementById('fname').value.trim();
+      const lname = document.getElementById('lname').value.trim();
+      const age   = document.getElementById('age').value;
+      const email = document.getElementById('email').value.trim();
+      const pass  = document.getElementById('password').value;
+      const conf  = document.getElementById('confirmPassword').value;
+
+      if (!fname) { document.getElementById('fnameErr').textContent = 'First name is required.'; valid = false; }
+      if (!lname) { document.getElementById('lnameErr').textContent = 'Last name is required.'; valid = false; }
+      if (!age || age < 13 || age > 100) { document.getElementById('ageErr').textContent = 'Enter a valid age (13–100).'; valid = false; }
+      if (!email || !/\S+@\S+\.\S+/.test(email)) { document.getElementById('emailErr').textContent = 'Enter a valid email address.'; valid = false; }
+      if (!pass || pass.length < 6) { document.getElementById('passErr').textContent = 'Password must be at least 6 characters.'; valid = false; }
+      if (pass !== conf) { document.getElementById('matchErr').textContent = 'Passwords do not match.'; valid = false; }
+      if (!valid) return;
+
+      const result = Auth.register({ firstName: fname, lastName: lname, email, password: pass, age });
+      if (result.success) {
+        Auth.login(email, pass);
+        window.location.href = 'profile.html';
+      } else {
+        document.getElementById('emailErr').textContent = result.error;
+      }
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+  <script src="metamask.js"></script>
+</body>
+</html>

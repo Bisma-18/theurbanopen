@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | The Urban Open</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <style>
+    /* ── Admin Login Page ─────────────────────────────────── */
+    .admin-login-page {
+      min-height: 100vh;
+      background: #0b0e14;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .admin-login-page::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      left: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0,210,255,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .admin-login-page::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255,77,0,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .admin-login-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 24px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      animation: fadeSlideUp 0.4s ease;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .admin-login-logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .admin-login-logo .brand {
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      background: linear-gradient(135deg, #00d2ff, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .admin-shield {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, rgba(0,210,255,0.15), rgba(255,77,0,0.15));
+      border: 1px solid rgba(0,210,255,0.3);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 1.6rem;
+    }
+
+    .admin-login-card h2 {
+      color: #f8fafc;
+      font-size: 1.5rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .admin-login-card .subtitle {
+      color: #64748b;
+      font-size: 0.875rem;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .al-field {
+      margin-bottom: 20px;
+    }
+
+    .al-field label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    .al-field input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      color: #f8fafc;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-sizing: border-box;
+    }
+
+    .al-field input:focus {
+      outline: none;
+      border-color: #00d2ff;
+      box-shadow: 0 0 0 3px rgba(0,210,255,0.12);
+    }
+
+    .al-field .input-wrap {
+      position: relative;
+    }
+
+    .al-field .toggle-pass {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .al-field .toggle-pass:hover { color: #94a3b8; }
+
+    .al-error {
+      color: #ef4444;
+      font-size: 0.8rem;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .al-error.show { display: block; }
+
+    .al-submit {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #00d2ff, #0099bb);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      font-family: inherit;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .al-submit:hover { opacity: 0.92; transform: translateY(-1px); }
+    .al-submit:active { transform: translateY(0); }
+    .al-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .al-back {
+      display: block;
+      text-align: center;
+      margin-top: 24px;
+      color: #64748b;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .al-back:hover { color: #00d2ff; }
+
+    .al-hint {
+      background: rgba(0,210,255,0.07);
+      border: 1px solid rgba(0,210,255,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-top: 24px;
+      font-size: 0.78rem;
+      color: #64748b;
+      text-align: center;
+      line-height: 1.5;
+    }
+    .al-hint strong { color: #00d2ff; }
+
+    .al-global-error {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #ef4444;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      margin-bottom: 20px;
+      display: none;
+      text-align: center;
+    }
+    .al-global-error.show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="admin-login-page">
+    <div class="admin-login-card">
+      <div class="admin-login-logo">
+        <div class="admin-shield">🛡️</div>
+        <span class="brand">THE URBAN OPEN</span>
+      </div>
+      <h2>Admin Access</h2>
+      <p class="subtitle">Sign in with your admin credentials to continue</p>
+
+      <div class="al-global-error" id="globalErr"></div>
+
+      <div class="al-field">
+        <label>Email Address</label>
+        <input type="email" id="alEmail" placeholder="admin@urbanopen.com" autocomplete="email">
+        <div class="al-error" id="alEmailErr"></div>
+      </div>
+
+      <div class="al-field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <input type="password" id="alPass" placeholder="Enter your password" autocomplete="current-password" style="padding-right:44px;">
+          <button class="toggle-pass" id="alTogglePass" type="button" onclick="togglePassVisibility()">
+            <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="al-error" id="alPassErr"></div>
+      </div>
+
+      <button class="al-submit" id="alSubmitBtn" onclick="handleAdminLogin()">
+        Sign In to Dashboard
+      </button>
+
+      <a href="index.html" class="al-back">← Back to main site</a>
+
+      <div class="al-hint">
+        <strong>Demo credentials:</strong><br>
+        Create an account and set role to <strong>admin</strong> in localStorage, or use the seeded admin below.<br>
+        Email: <strong>admin@urbanopen.com</strong> · Password: <strong>Admin@2026</strong>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    // Seed a default admin account if none exists
+    (function seedAdmin() {
+      const USERS_KEY = 'tuo_users';
+      const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+      const adminExists = users.find(u => u.email === 'admin@urbanopen.com');
+      if (!adminExists) {
+        // Use same hash function as auth.js
+        function hashPassword(password) {
+          let hash = 0;
+          const str = password + 'tuo_salt_2026';
+          for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash |= 0;
+          }
+          return hash.toString(16);
+        }
+        users.push({
+          id: 'usr_admin_default',
+          firstName: 'Admin',
+          lastName: 'Panel',
+          email: 'admin@urbanopen.com',
+          passwordHash: hashPassword('Admin@2026'),
+          age: 30,
+          role: 'admin',
+          avatar: null,
+          walletAddress: null,
+          registrationDate: new Date().toISOString(),
+          paymentHistory: [],
+          bio: 'System administrator'
+        });
+        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      }
+    })();
+
+    // If already logged in as admin, redirect
+    if (Auth.isAdmin()) {
+      window.location.href = 'admin-dashboard.html';
+    }
+
+    function togglePassVisibility() {
+      const input = document.getElementById('alPass');
+      const icon = document.getElementById('eyeIcon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+      } else {
+        input.type = 'password';
+        icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+      }
+    }
+
+    function handleAdminLogin() {
+      const email = document.getElementById('alEmail').value.trim();
+      const pass  = document.getElementById('alPass').value;
+      const btn   = document.getElementById('alSubmitBtn');
+      const errEl = document.getElementById('globalErr');
+
+      // Clear errors
+      document.getElementById('alEmailErr').classList.remove('show');
+      document.getElementById('alPassErr').classList.remove('show');
+      errEl.classList.remove('show');
+
+      // Basic validation
+      if (!email) {
+        const el = document.getElementById('alEmailErr');
+        el.textContent = 'Email is required.';
+        el.classList.add('show');
+        return;
+      }
+      if (!pass) {
+        const el = document.getElementById('alPassErr');
+        el.textContent = 'Password is required.';
+        el.classList.add('show');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Signing in…';
+
+      setTimeout(() => {
+        const result = Auth.login(email, pass);
+        if (!result.success) {
+          errEl.textContent = result.error;
+          errEl.classList.add('show');
+          btn.disabled = false;
+          btn.textContent = 'Sign In to Dashboard';
+          return;
+        }
+        if (result.user.role !== 'admin') {
+          Auth.logout();
+          errEl.textContent = 'Access denied. This account does not have admin privileges.';
+          errEl.classList.add('show');
+          btn.disabled = false;
+          btn.textContent = 'Sign In to Dashboard';
+          return;
+        }
+        window.location.href = 'admin-dashboard.html';
+      }, 600);
+    }
+
+    // Enter key support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleAdminLogin();
+    });
+  </script>
+</body>
+</html>

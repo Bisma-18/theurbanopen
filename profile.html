@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile | The Urban Open</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="web3.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo"><h1>THE URBAN OPEN</h1></div>
+    <nav>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="schedule.html">Schedule</a>
+        <a href="players.html">Players</a>
+        <a href="registration.html">Registration</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <button id="theme-toggle">🌙 Dark</button>
+    </nav>
+  </header>
+
+  <!-- Change Password Modal -->
+  <div class="modal-overlay" id="changePassModal">
+    <div class="modal-box">
+      <h3>🔐 Change Password</h3>
+      <label style="font-size:0.75rem;opacity:0.6;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Current Password</label>
+      <input type="password" id="cpCurrent" placeholder="Current password">
+      <span id="cpCurrentErr" class="error"></span>
+      <label style="font-size:0.75rem;opacity:0.6;font-weight:700;text-transform:uppercase;letter-spacing:1px;display:block;margin-top:8px;">New Password</label>
+      <input type="password" id="cpNew" placeholder="New password (min 6 chars)">
+      <span id="cpNewErr" class="error"></span>
+      <label style="font-size:0.75rem;opacity:0.6;font-weight:700;text-transform:uppercase;letter-spacing:1px;display:block;margin-top:8px;">Confirm New Password</label>
+      <input type="password" id="cpConfirm" placeholder="Confirm new password">
+      <span id="cpConfirmErr" class="error"></span>
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="btn-save" id="cpSaveBtn">Update Password</button>
+        <button class="btn-cancel" id="cpCancelBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Avatar Upload Modal -->
+  <div class="modal-overlay" id="avatarModal">
+    <div class="modal-box">
+      <h3>📷 Update Profile Photo</h3>
+      <p style="font-size:0.85rem;opacity:0.7;margin-bottom:16px;">Upload a photo from your device.</p>
+      <input type="file" id="avatarFileInput" accept="image/*" style="
+        width:100%;padding:10px;background:var(--bg-color);
+        border:1.5px dashed var(--border-color);border-radius:8px;
+        color:var(--text-color);cursor:pointer;margin-bottom:16px;font-family:inherit;
+      ">
+      <div id="avatarPreview" style="text-align:center;margin-bottom:16px;display:none;">
+        <img id="avatarPreviewImg" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--accent-blue);">
+      </div>
+      <div class="modal-actions">
+        <button class="btn-save" id="avatarSaveBtn">Save Photo</button>
+        <button class="btn-cancel" id="avatarCancelBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container profile-page">
+
+    <!-- Profile Header Card -->
+    <div class="profile-header-card" id="profileHeaderCard">
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar" id="profileAvatar">
+          <span id="profileInitials">?</span>
+        </div>
+        <div class="profile-avatar-edit" id="openAvatarModal" title="Change photo">✏️</div>
+      </div>
+
+      <div class="profile-info">
+        <h2 id="profileFullName">Loading…</h2>
+        <div class="profile-email" id="profileEmail"></div>
+        <div class="profile-role" id="profileRole"></div>
+
+        <div class="profile-meta" id="profileMeta">
+          <div class="profile-meta-item">
+            <span>Member Since</span>
+            <span id="profileRegDate">—</span>
+          </div>
+          <div class="profile-meta-item">
+            <span>Wallet</span>
+            <span id="profileWalletShort">Not connected</span>
+          </div>
+          <div class="profile-meta-item">
+            <span>Payments</span>
+            <span id="profilePayCount">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;align-self:flex-start;margin-left:auto;">
+        <button class="btn" id="editProfileBtn" style="padding:10px 22px;font-size:0.8rem;">Edit Profile</button>
+        <button class="btn-secondary" id="changePasswordBtn" style="padding:10px 22px;font-size:0.8rem;">Change Password</button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="profile-tabs">
+      <button class="profile-tab active" data-tab="info">Profile Info</button>
+      <button class="profile-tab" data-tab="payments">Payment History</button>
+      <button class="profile-tab" data-tab="security">Security</button>
+    </div>
+
+    <!-- Tab: Profile Info -->
+    <div class="profile-tab-content active" id="tab-info">
+      <!-- View Mode -->
+      <div id="viewMode">
+        <div class="info-grid">
+          <div class="info-item">
+            <label>First Name</label>
+            <div class="info-value" id="infoFName">—</div>
+          </div>
+          <div class="info-item">
+            <label>Last Name</label>
+            <div class="info-value" id="infoLName">—</div>
+          </div>
+          <div class="info-item">
+            <label>Age</label>
+            <div class="info-value" id="infoAge">—</div>
+          </div>
+          <div class="info-item">
+            <label>Email Address</label>
+            <div class="info-value" id="infoEmail">—</div>
+          </div>
+          <div class="info-item" style="grid-column: 1 / -1;">
+            <label>Wallet Address</label>
+            <div class="info-value" id="infoWallet" style="font-family:monospace;font-size:0.82rem;">—</div>
+          </div>
+          <div class="info-item" style="grid-column: 1 / -1;">
+            <label>Bio</label>
+            <div class="info-value" id="infoBio" style="white-space:pre-wrap;">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Mode -->
+      <div id="editMode" style="display:none;">
+        <div class="card" style="max-width:560px;">
+          <h3 style="margin-bottom:20px;font-size:1rem;color:var(--accent-blue);">Edit Your Profile</h3>
+          <form id="editProfileForm" class="decongested-form">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div>
+                <label class="form-label">First Name</label>
+                <input type="text" id="editFName" placeholder="First name">
+              </div>
+              <div>
+                <label class="form-label">Last Name</label>
+                <input type="text" id="editLName" placeholder="Last name">
+              </div>
+            </div>
+            <label class="form-label">Age</label>
+            <input type="number" id="editAge" placeholder="Age" min="13" max="100">
+            <label class="form-label">Bio <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+            <textarea id="editBio" placeholder="Tell the arena about yourself…" rows="3" style="resize:vertical;"></textarea>
+            <span id="editProfileErr" class="error"></span>
+            <div style="display:flex;gap:12px;margin-top:8px;">
+              <button type="submit" class="btn" style="padding:11px 24px;font-size:0.85rem;">Save Changes</button>
+              <button type="button" class="btn-secondary" id="cancelEditBtn" style="padding:11px 24px;font-size:0.85rem;">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Payment History -->
+    <div class="profile-tab-content" id="tab-payments">
+      <div id="paymentList">
+        <div style="text-align:center;padding:60px 20px;color:var(--muted);">
+          <div style="font-size:3rem;margin-bottom:12px;">💳</div>
+          <p>No payment history yet.</p>
+          <p style="font-size:0.85rem;margin-top:6px;">Register for a tournament to see transactions here.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Security -->
+    <div class="profile-tab-content" id="tab-security">
+      <div class="card" style="max-width:500px;">
+        <h3 style="margin-bottom:6px;font-size:1rem;">Account Security</h3>
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:24px;">Keep your account safe and secure.</p>
+
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:16px;background:var(--bg-color);border-radius:var(--radius-md);border:1px solid var(--border-color);">
+            <div>
+              <div style="font-weight:700;font-size:0.9rem;">Password</div>
+              <div style="font-size:0.8rem;color:var(--muted);margin-top:3px;">Last changed: account creation</div>
+            </div>
+            <button class="btn-secondary" id="secChangePassBtn" style="padding:8px 18px;font-size:0.8rem;">Change</button>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:16px;background:var(--bg-color);border-radius:var(--radius-md);border:1px solid var(--border-color);">
+            <div>
+              <div style="font-weight:700;font-size:0.9rem;">Registration Date</div>
+              <div class="info-value" id="secRegDate" style="font-size:0.8rem;color:var(--muted);margin-top:3px;">—</div>
+            </div>
+            <span style="background:rgba(34,197,94,0.1);color:#22c55e;border:1px solid rgba(34,197,94,0.25);padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:800;">ACTIVE</span>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:16px;background:var(--bg-color);border-radius:var(--radius-md);border:1px solid var(--border-color);">
+            <div>
+              <div style="font-weight:700;font-size:0.9rem;">Account Role</div>
+              <div id="secRole" style="font-size:0.8rem;color:var(--muted);margin-top:3px;">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:28px;padding-top:24px;border-top:1px solid var(--border-color);">
+          <h4 style="color:#ef4444;margin-bottom:12px;font-size:0.9rem;">Danger Zone</h4>
+          <button class="btn-secondary" id="logoutBtn" style="border-color:#ef4444;color:#ef4444;padding:10px 20px;font-size:0.85rem;">
+            Sign Out of Account
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>The Urban Open</h3>
+        <p>Pushing the boundaries of talent since 2024.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="schedule.html">Schedule</a></li>
+          <li><a href="registration.html">Registration</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 The Urban Open Tournament. All Rights Reserved.</div>
+  </footer>
+
+  <script src="theme.js"></script>
+  <script src="auth.js"></script>
+  <script src="nav-init.js"></script>
+  <script>
+    // Guard: must be logged in
+    if (!Auth.isLoggedIn()) {
+      window.location.href = 'login.html?next=profile.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      Auth.injectNavAuth();
+      loadProfile();
+
+      // Tabs
+      document.querySelectorAll('.profile-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active'));
+          tab.classList.add('active');
+          document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+        });
+      });
+
+      // Edit profile button
+      document.getElementById('editProfileBtn').addEventListener('click', openEditMode);
+      document.getElementById('cancelEditBtn').addEventListener('click', closeEditMode);
+
+      // Change password buttons
+      document.getElementById('changePasswordBtn').addEventListener('click', openPassModal);
+      document.getElementById('secChangePassBtn').addEventListener('click', openPassModal);
+      document.getElementById('cpCancelBtn').addEventListener('click', closePassModal);
+      document.getElementById('cpSaveBtn').addEventListener('click', handleChangePass);
+
+      // Avatar modal
+      document.getElementById('openAvatarModal').addEventListener('click', () => {
+        document.getElementById('avatarModal').classList.add('active');
+      });
+      document.getElementById('avatarCancelBtn').addEventListener('click', () => {
+        document.getElementById('avatarModal').classList.remove('active');
+      });
+      document.getElementById('avatarFileInput').addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          document.getElementById('avatarPreviewImg').src = ev.target.result;
+          document.getElementById('avatarPreview').style.display = 'block';
+          document.getElementById('avatarSaveBtn')._dataUrl = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+      document.getElementById('avatarSaveBtn').addEventListener('click', function() {
+        const dataUrl = this._dataUrl;
+        if (!dataUrl) return;
+        Auth.updateProfile({ avatar: dataUrl });
+        document.getElementById('avatarModal').classList.remove('active');
+        loadProfile();
+        showToast('Profile photo updated!', 'success');
+      });
+
+      // Edit form submit
+      document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const result = Auth.updateProfile({
+          firstName: document.getElementById('editFName').value.trim(),
+          lastName:  document.getElementById('editLName').value.trim(),
+          age:       parseInt(document.getElementById('editAge').value),
+          bio:       document.getElementById('editBio').value.trim(),
+        });
+        if (result.success) {
+          closeEditMode();
+          loadProfile();
+          showToast('Profile updated successfully!', 'success');
+        } else {
+          document.getElementById('editProfileErr').textContent = result.error;
+        }
+      });
+
+      // Logout
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        Auth.logout();
+        window.location.href = 'index.html';
+      });
+
+      // Listen for wallet connect events from metamask.js
+      document.addEventListener('walletConnected', (ev) => {
+        if (ev.detail && ev.detail.address) {
+          Auth.updateProfile({ walletAddress: ev.detail.address });
+          loadProfile();
+        }
+      });
+    });
+
+    function loadProfile() {
+      const user = Auth.getCurrentUser();
+      if (!user) return;
+
+      const initials = (user.firstName[0] + user.lastName[0]).toUpperCase();
+      const avatarEl = document.getElementById('profileAvatar');
+
+      if (user.avatar) {
+        avatarEl.innerHTML = `<img src="${user.avatar}" alt="${initials}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+      } else {
+        avatarEl.innerHTML = `<span id="profileInitials">${initials}</span>`;
+      }
+
+      const fullName = `${user.firstName} ${user.lastName}`;
+      document.getElementById('profileFullName').textContent = fullName;
+      document.getElementById('profileEmail').textContent = user.email;
+      document.getElementById('profileRole').textContent = user.role.toUpperCase();
+
+      const regDate = new Date(user.registrationDate);
+      const regStr  = regDate.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+      document.getElementById('profileRegDate').textContent = regStr;
+      document.getElementById('profileWalletShort').textContent = user.walletAddress
+        ? user.walletAddress.slice(0,6) + '…' + user.walletAddress.slice(-4)
+        : 'Not connected';
+      document.getElementById('profilePayCount').textContent = (user.paymentHistory || []).length;
+
+      // Info tab
+      document.getElementById('infoFName').textContent  = user.firstName;
+      document.getElementById('infoLName').textContent  = user.lastName;
+      document.getElementById('infoAge').textContent    = user.age || '—';
+      document.getElementById('infoEmail').textContent  = user.email;
+      document.getElementById('infoWallet').textContent = user.walletAddress || 'No wallet linked';
+      document.getElementById('infoBio').textContent    = user.bio || 'No bio added yet.';
+
+      // Payments tab
+      renderPayments(user.paymentHistory || []);
+
+      // Security tab
+      document.getElementById('secRegDate').textContent = regStr;
+      document.getElementById('secRole').textContent    = `${user.role} account`;
+    }
+
+    function renderPayments(payments) {
+      const container = document.getElementById('paymentList');
+      if (!payments.length) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:60px 20px;color:var(--muted);">
+            <div style="font-size:3rem;margin-bottom:12px;">💳</div>
+            <p>No payment history yet.</p>
+            <p style="font-size:0.85rem;margin-top:6px;">Register for a tournament to see transactions here.</p>
+          </div>`;
+        return;
+      }
+      container.innerHTML = payments.map(p => `
+        <div class="payment-row">
+          <div>
+            <div style="font-weight:700;font-size:0.9rem;">${p.description || 'Tournament Registration'}</div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-top:4px;">${new Date(p.date).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}</div>
+            ${p.txHash ? `<div style="font-family:monospace;font-size:0.7rem;color:var(--muted);margin-top:4px;">${p.txHash.slice(0,20)}…</div>` : ''}
+          </div>
+          <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+            <div style="font-weight:800;font-size:0.95rem;">${p.amount || '0.001 ETH'}</div>
+            <span class="payment-status-badge ${p.status || 'confirmed'}">${p.status || 'confirmed'}</span>
+          </div>
+        </div>`).join('');
+    }
+
+    function openEditMode() {
+      const user = Auth.getCurrentUser();
+      document.getElementById('editFName').value = user.firstName;
+      document.getElementById('editLName').value = user.lastName;
+      document.getElementById('editAge').value   = user.age || '';
+      document.getElementById('editBio').value   = user.bio || '';
+      document.getElementById('viewMode').style.display = 'none';
+      document.getElementById('editMode').style.display = 'block';
+      // Switch to info tab
+      document.querySelector('[data-tab="info"]').click();
+    }
+
+    function closeEditMode() {
+      document.getElementById('editMode').style.display = 'none';
+      document.getElementById('viewMode').style.display = 'block';
+    }
+
+    function openPassModal() {
+      document.getElementById('cpCurrent').value = '';
+      document.getElementById('cpNew').value = '';
+      document.getElementById('cpConfirm').value = '';
+      ['cpCurrentErr','cpNewErr','cpConfirmErr'].forEach(id => document.getElementById(id).textContent = '');
+      document.getElementById('changePassModal').classList.add('active');
+    }
+
+    function closePassModal() {
+      document.getElementById('changePassModal').classList.remove('active');
+    }
+
+    function handleChangePass() {
+      const cur  = document.getElementById('cpCurrent').value;
+      const nw   = document.getElementById('cpNew').value;
+      const conf = document.getElementById('cpConfirm').value;
+      let valid = true;
+      ['cpCurrentErr','cpNewErr','cpConfirmErr'].forEach(id => document.getElementById(id).textContent = '');
+
+      if (!cur)  { document.getElementById('cpCurrentErr').textContent = 'Required.'; valid = false; }
+      if (!nw || nw.length < 6) { document.getElementById('cpNewErr').textContent = 'At least 6 characters.'; valid = false; }
+      if (nw !== conf) { document.getElementById('cpConfirmErr').textContent = 'Passwords do not match.'; valid = false; }
+      if (!valid) return;
+
+      const result = Auth.changePassword(cur, nw);
+      if (result.success) {
+        closePassModal();
+        showToast('Password changed successfully!', 'success');
+      } else {
+        document.getElementById('cpCurrentErr').textContent = result.error;
+      }
+    }
+
+    function showToast(msg, type = 'info') {
+      const existing = document.querySelector('.tuo-toast');
+      if (existing) existing.remove();
+      const toast = document.createElement('div');
+      toast.className = `tuo-toast ${type}`;
+      const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+      toast.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3500);
+    }
+
+    // Close modals on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('active');
+      });
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+  <script src="metamask.js"></script>
+</body>
+</html>

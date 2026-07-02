@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | The Urban Open</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="web3.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo"><h1>THE URBAN OPEN</h1></div>
+    <nav>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="schedule.html">Schedule</a>
+        <a href="players.html">Players</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <button id="theme-toggle">🌙 Dark</button>
+    </nav>
+  </header>
+
+  <div class="auth-page-wrapper">
+    <div class="auth-card">
+      <h2>Welcome Back</h2>
+      <p class="auth-subtitle">Sign in to your Urban Open account</p>
+
+      <form id="loginForm" class="decongested-form" novalidate>
+        <label class="form-label">Email Address</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+        <span id="lEmailErr" class="error"></span>
+
+        <label class="form-label">Password</label>
+        <div class="pass-wrapper">
+          <input type="password" id="loginPass" placeholder="Enter your password" autocomplete="current-password">
+          <span id="togglePass" class="toggle-emoji">🙈</span>
+        </div>
+        <span id="lPassErr" class="error"></span>
+
+        <div style="text-align:right; margin-bottom:20px;">
+          <a href="forgot-password.html" style="font-size:0.82rem; color:var(--accent-blue);">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn" style="width:100%;">Sign In</button>
+      </form>
+
+      <div class="auth-footer">
+        New athlete? <a href="signup.html">Create an account</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="theme.js"></script>
+  <script src="auth.js"></script>
+  <script src="nav-init.js"></script>
+  <script>
+    // If already logged in, redirect home
+    if (Auth.isLoggedIn()) window.location.href = 'index.html';
+
+    // Auth nav
+    document.addEventListener('DOMContentLoaded', () => Auth.injectNavAuth());
+
+    // Toggle password
+    document.getElementById('togglePass').addEventListener('click', function() {
+      const p = document.getElementById('loginPass');
+      const isPass = p.type === 'password';
+      p.type = isPass ? 'text' : 'password';
+      this.textContent = isPass ? '👁️' : '🙈';
+    });
+
+    // Login form
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass  = document.getElementById('loginPass').value;
+      let valid = true;
+
+      document.getElementById('lEmailErr').textContent = '';
+      document.getElementById('lPassErr').textContent = '';
+
+      if (!email) {
+        document.getElementById('lEmailErr').textContent = 'Email is required.';
+        valid = false;
+      } else if (!/\S+@\S+\.\S+/.test(email)) {
+        document.getElementById('lEmailErr').textContent = 'Enter a valid email address.';
+        valid = false;
+      }
+
+      if (!pass) {
+        document.getElementById('lPassErr').textContent = 'Password is required.';
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      const result = Auth.login(email, pass);
+      if (result.success) {
+        const redirect = new URLSearchParams(window.location.search).get('next') || 'index.html';
+        window.location.href = redirect;
+      } else {
+        document.getElementById('lPassErr').textContent = result.error;
+      }
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+  <script src="metamask.js"></script>
+</body>
+</html>

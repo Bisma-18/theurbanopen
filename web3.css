@@ -1,0 +1,670 @@
+/* ============================================================
+   WEB3.CSS — The Urban Open | MetaMask Web3 UI Styles
+   ============================================================
+   All styles for wallet integration, modals, toasts, buttons.
+   Matches the dark gaming theme of The Urban Open.
+   ============================================================ */
+
+/* ─────────────────────────────────────────────
+   NAVBAR WALLET WRAPPER
+───────────────────────────────────────────── */
+.w3-nav-wallet {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+
+/* ─────────────────────────────────────────────
+   CONNECT WALLET BUTTON
+───────────────────────────────────────────── */
+.w3-connect-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #e8790a, #f5a623);
+  color: #000;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 0 16px rgba(232, 121, 10, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.w3-connect-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  pointer-events: none;
+}
+
+.w3-connect-btn:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 0 28px rgba(232, 121, 10, 0.7);
+  filter: brightness(1.1);
+}
+
+.w3-connect-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Loading state */
+.w3-btn-loading .w3-connect-btn,
+.w3-connect-btn.w3-btn-loading {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: #00d2ff;
+  border: 1px solid #00d2ff44;
+  box-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
+}
+
+/* MetaMask Fox Icon */
+.w3-fox-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 3px rgba(232,121,10,0.5));
+}
+
+/* ─────────────────────────────────────────────
+   SPINNER ANIMATION
+───────────────────────────────────────────── */
+.w3-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(0, 210, 255, 0.3);
+  border-top-color: #00d2ff;
+  border-radius: 50%;
+  animation: w3-spin 0.8s linear infinite;
+}
+
+@keyframes w3-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─────────────────────────────────────────────
+   CONNECTED WALLET CHIP
+───────────────────────────────────────────── */
+.w3-wallet-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 210, 255, 0.07);
+  border: 1px solid rgba(0, 210, 255, 0.25);
+  border-radius: 50px;
+  padding: 7px 14px;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  animation: w3-chip-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 14px rgba(0, 210, 255, 0.12);
+  transition: box-shadow 0.3s;
+}
+
+.w3-wallet-chip:hover {
+  box-shadow: 0 0 22px rgba(0, 210, 255, 0.25);
+}
+
+@keyframes w3-chip-in {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* Animated live dot */
+.w3-wallet-dot-live {
+  width: 8px;
+  height: 8px;
+  background: #00ff88;
+  border-radius: 50%;
+  animation: w3-pulse-dot 1.6s ease-in-out infinite;
+  box-shadow: 0 0 6px #00ff88;
+  flex-shrink: 0;
+}
+
+@keyframes w3-pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.8); }
+}
+
+.w3-address-text {
+  font-family: 'Courier New', monospace;
+  color: #e0e0e0;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.w3-separator {
+  opacity: 0.3;
+  font-size: 0.9rem;
+}
+
+.w3-network-text {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ─────────────────────────────────────────────
+   DISCONNECT BUTTON
+───────────────────────────────────────────── */
+.w3-disconnect-btn {
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 2px 5px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.w3-disconnect-btn:hover {
+  background: rgba(255, 77, 0, 0.2);
+  color: #ff4d00;
+}
+
+/* ─────────────────────────────────────────────
+   NETWORK WARNING BANNER
+───────────────────────────────────────────── */
+#w3-network-banner {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(90deg, #7c1700, #3b0900);
+  border-bottom: 2px solid #ff4d00;
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  animation: w3-banner-in 0.3s ease;
+}
+
+@keyframes w3-banner-in {
+  from { opacity: 0; transform: translateY(-100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.w3-network-banner-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fbbf24;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.w3-network-name {
+  color: #ff6b35;
+  font-family: monospace;
+}
+
+/* Switch network button inside banner */
+.w3-switch-btn {
+  background: #ff4d00;
+  color: #fff;
+  border: none;
+  padding: 5px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: 0.2s;
+}
+
+.w3-switch-btn:hover {
+  background: #ff6b35;
+  transform: scale(1.05);
+}
+
+/* ─────────────────────────────────────────────
+   TOAST NOTIFICATIONS
+───────────────────────────────────────────── */
+.w3-toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 14px;
+  padding: 14px 20px;
+  min-width: 280px;
+  max-width: 420px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  transform: translateX(120%);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.w3-toast.w3-toast-visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.w3-toast-success { border-color: rgba(0, 255, 136, 0.4); box-shadow: 0 20px 50px rgba(0, 255, 136, 0.12); }
+.w3-toast-error   { border-color: rgba(255, 77, 0, 0.4);  box-shadow: 0 20px 50px rgba(255, 77, 0, 0.12); }
+.w3-toast-warning { border-color: rgba(251, 191, 36, 0.4); box-shadow: 0 20px 50px rgba(251,191,36,0.12); }
+.w3-toast-info    { border-color: rgba(0, 210, 255, 0.4); box-shadow: 0 20px 50px rgba(0,210,255,0.12); }
+
+.w3-toast-icon { font-size: 1.4rem; flex-shrink: 0; }
+.w3-toast-msg  { color: #e0e0e0; font-size: 0.88rem; line-height: 1.5; font-weight: 500; }
+
+/* ─────────────────────────────────────────────
+   PAYMENT MODAL
+───────────────────────────────────────────── */
+.w3-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 9990;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.w3-modal-overlay.w3-modal-visible {
+  opacity: 1;
+}
+
+.w3-modal-box {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 24px;
+  padding: 40px 36px;
+  max-width: 440px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 60px rgba(0, 210, 255, 0.06);
+  animation: w3-modal-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@keyframes w3-modal-in {
+  from { transform: scale(0.8) translateY(30px); opacity: 0; }
+  to   { transform: scale(1)   translateY(0);    opacity: 1; }
+}
+
+.w3-modal-icon {
+  font-size: 3.5rem;
+  line-height: 1;
+  margin: 0 auto;
+}
+
+/* Spinning animation for loading icon */
+.w3-modal-spin {
+  display: inline-block;
+  animation: w3-spin 1s linear infinite;
+  color: var(--accent-blue, #00d2ff);
+}
+
+/* Success checkmark */
+.w3-modal-success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  background: rgba(0, 255, 136, 0.12);
+  border: 2px solid #00ff88;
+  border-radius: 50%;
+  font-size: 2.2rem;
+  color: #00ff88;
+  margin: 0 auto;
+  animation: w3-success-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes w3-success-pop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.w3-modal-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.w3-modal-subtitle {
+  color: #8b949e;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Transaction detail rows */
+.w3-tx-details {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid #1c2128;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.w3-tx-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.w3-tx-row span { color: #8b949e; }
+.w3-tx-row strong { color: #e6edf3; font-weight: 700; }
+
+.w3-tx-hash {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  color: #8b949e;
+}
+
+.w3-tx-hash code {
+  font-family: 'Courier New', monospace;
+  color: #00d2ff;
+  background: rgba(0, 210, 255, 0.08);
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+}
+
+/* Pulse loading bar */
+.w3-pulse-bar {
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #00d2ff, transparent);
+  border-radius: 4px;
+  animation: w3-pulse-bar-anim 1.5s ease-in-out infinite;
+}
+
+@keyframes w3-pulse-bar-anim {
+  0%   { opacity: 0.3; transform: scaleX(0.3); }
+  50%  { opacity: 1;   transform: scaleX(1); }
+  100% { opacity: 0.3; transform: scaleX(0.3); }
+}
+
+/* Explorer link */
+.w3-explorer-link {
+  display: inline-block;
+  color: #00d2ff;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  padding: 8px 18px;
+  border-radius: 50px;
+  transition: 0.3s;
+}
+
+.w3-explorer-link:hover {
+  background: rgba(0, 210, 255, 0.1);
+  box-shadow: 0 0 16px rgba(0, 210, 255, 0.2);
+}
+
+/* Modal close button */
+.w3-modal-close-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #00d2ff, #0099cc);
+  color: #000;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s;
+  text-decoration: none;
+  width: 100%;
+}
+
+.w3-modal-close-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 210, 255, 0.35);
+}
+
+/* ─────────────────────────────────────────────
+   WALLET GATE ON REGISTRATION PAGE
+───────────────────────────────────────────── */
+#wallet-gate {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px 30px;
+  background: rgba(0, 210, 255, 0.04);
+  border: 1px dashed rgba(0, 210, 255, 0.25);
+  border-radius: 18px;
+  text-align: center;
+  margin-bottom: 24px;
+  animation: w3-gate-pulse 3s ease-in-out infinite;
+}
+
+@keyframes w3-gate-pulse {
+  0%, 100% { border-color: rgba(0, 210, 255, 0.2); box-shadow: none; }
+  50% { border-color: rgba(0, 210, 255, 0.5); box-shadow: 0 0 30px rgba(0, 210, 255, 0.06); }
+}
+
+#wallet-gate .w3-gate-icon {
+  font-size: 3rem;
+  animation: w3-gate-float 3s ease-in-out infinite;
+}
+
+@keyframes w3-gate-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+#wallet-gate h4 {
+  color: #e6edf3;
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+#wallet-gate p {
+  color: #8b949e;
+  font-size: 0.88rem;
+  margin: 0;
+  max-width: 320px;
+}
+
+/* ─────────────────────────────────────────────
+   LEADERBOARD WALLET STATUS SECTION
+───────────────────────────────────────────── */
+#lb-wallet-status {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 22px 28px;
+  margin-bottom: 30px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.lb-wallet-connected {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.lb-wallet-disconnected {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lb-wallet-dot {
+  width: 12px;
+  height: 12px;
+  background: #00ff88;
+  border-radius: 50%;
+  animation: w3-pulse-dot 1.6s ease-in-out infinite;
+  box-shadow: 0 0 8px #00ff88;
+  flex-shrink: 0;
+}
+
+.lb-wallet-dot-off {
+  background: #555;
+  box-shadow: none;
+  animation: none;
+}
+
+.lb-wallet-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.lb-wallet-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.5;
+  font-weight: 700;
+}
+
+.lb-wallet-addr {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--accent-blue, #00d2ff);
+}
+
+.lb-wallet-network {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ─────────────────────────────────────────────
+   PAY & REGISTER BUTTON (Registration Page)
+───────────────────────────────────────────── */
+#reg-pay-btn {
+  background: linear-gradient(135deg, #ff4d00, #ff8800) !important;
+  border: none;
+  width: 100%;
+  margin-top: 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+#reg-pay-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  pointer-events: none;
+}
+
+#reg-pay-btn:not(:disabled):hover {
+  box-shadow: 0 0 30px rgba(255, 77, 0, 0.5) !important;
+}
+
+#reg-pay-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ─────────────────────────────────────────────
+   GLOW ANIMATION — Applied to section titles
+───────────────────────────────────────────── */
+@keyframes w3-text-glow {
+  0%, 100% { text-shadow: 0 0 10px rgba(0, 210, 255, 0.3); }
+  50%       { text-shadow: 0 0 25px rgba(0, 210, 255, 0.7), 0 0 50px rgba(0, 210, 255, 0.3); }
+}
+
+.w3-glow-text {
+  animation: w3-text-glow 2.5s ease-in-out infinite;
+}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE — Mobile Adjustments
+───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .w3-connect-btn {
+    font-size: 0;        /* Hide text on mobile */
+    padding: 9px 10px;
+  }
+
+  .w3-connect-btn .w3-fox-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .w3-wallet-chip {
+    padding: 6px 10px;
+    gap: 5px;
+    font-size: 0.72rem;
+  }
+
+  .w3-address-text {
+    display: none; /* Hide address on tiny screens */
+  }
+
+  .w3-separator { display: none; }
+
+  .w3-network-text {
+    font-size: 0.65rem;
+  }
+
+  .w3-toast {
+    bottom: 15px;
+    right: 15px;
+    left: 15px;
+    max-width: none;
+  }
+
+  .w3-modal-box {
+    padding: 28px 22px;
+  }
+
+  .lb-wallet-connected {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .w3-connect-btn {
+    padding: 8px;
+  }
+  .w3-wallet-chip {
+    border-radius: 50px;
+  }
+}

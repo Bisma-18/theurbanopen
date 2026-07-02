@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Registration | The Urban Open</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="web3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <style>
+        .reg-container { display: grid; grid-template-columns: 1fr; max-width: 560px; margin: 20px auto 0; gap: 30px; }
+        .section-box { background: var(--card-bg); padding: 30px; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .participant-card { background: var(--bg-color); padding: 15px; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid var(--accent-blue); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); transition: 0.3s; }
+        .participant-card:hover { border-color: var(--win-gold); transform: scale(1.02); }
+        .btn-delete { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: bold; margin-left:5px; }
+        .btn-edit { background: var(--accent-blue); color: #000; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
+        .toggle-btn { background: transparent; color: var(--accent-blue); border: 1px solid var(--accent-blue); padding: 8px 15px; border-radius: 50px; cursor: pointer; font-size: 0.9rem; margin-bottom: 15px; transition: 0.3s; font-weight: bold; }
+        .toggle-btn:hover { background: var(--accent-blue); color: #000; }
+        #playerCount { color: var(--win-gold); font-weight: bold; }
+        .wallet-badge { display:inline-flex; align-items:center; gap:4px; background:rgba(0,255,136,0.1); border:1px solid rgba(0,255,136,0.3); border-radius:20px; padding:2px 8px; font-size:0.65rem; color:#00ff88; font-weight:700; margin-top:4px; text-transform:uppercase; }
+        .api-badge { display:inline-flex; align-items:center; gap:4px; background:rgba(0,210,255,0.1); border:1px solid rgba(0,210,255,0.3); border-radius:20px; padding:2px 8px; font-size:0.65rem; color:var(--accent-blue); font-weight:700; margin-top:4px; margin-left:4px; text-transform:uppercase; }
+        .sim-badge { display:inline-flex; align-items:center; gap:4px; background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.3); border-radius:20px; padding:2px 8px; font-size:0.65rem; color:var(--win-gold); font-weight:700; margin-top:4px; margin-left:4px; text-transform:uppercase; }
+        .loading-spinner { text-align:center; padding:40px; opacity:0.6; }
+        .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; }
+        .modal-overlay.active { display:flex; }
+        .modal-box { background:var(--card-bg); padding:35px; border-radius:20px; width:90%; max-width:450px; border:1px solid var(--border-color); }
+        .modal-box h3 { color:var(--win-gold); margin-bottom:20px; }
+        .modal-box input { width:100%; padding:10px 14px; margin-bottom:15px; border-radius:8px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); font-size:0.95rem; box-sizing:border-box; }
+        .modal-actions { display:flex; gap:10px; }
+        .btn-save { background:var(--win-gold); color:#000; border:none; padding:10px 22px; border-radius:8px; cursor:pointer; font-weight:bold; flex:1; }
+        .btn-cancel { background:transparent; color:var(--text-color); border:1px solid var(--border-color); padding:10px 22px; border-radius:8px; cursor:pointer; flex:1; }
+    </style>
+</head>
+<body>
+      <header>
+    <div class="logo"><h1>THE URBAN OPEN</h1></div>
+    <nav>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="schedule.html">Schedule</a>
+        <a href="players.html">Players</a>
+        <a href="registration.html" class="active">Registration</a>
+        <a href="admin-login.html">Admin</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <button id="theme-toggle">🌙 Dark</button>
+    </nav>
+  </header>
+
+    <!-- Edit Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-box">
+            <h3><i class="fas fa-edit"></i> Edit Registration</h3>
+            <input type="hidden" id="editId">
+            <label style="font-size:0.8rem;opacity:0.7;font-weight:bold;">PLAYER NAME</label>
+            <input type="text" id="editName" placeholder="Player Name">
+            <label style="font-size:0.8rem;opacity:0.7;font-weight:bold;">GAME ID</label>
+            <input type="text" id="editGameId" placeholder="Game ID">
+            <label style="font-size:0.8rem;opacity:0.7;font-weight:bold;">TEAM NAME</label>
+            <input type="text" id="editTeam" placeholder="Team Name">
+            <div class="modal-actions">
+                <button class="btn-save" onclick="saveEdit()"><i class="fas fa-save"></i> Save Changes</button>
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h2 style="font-size: 2.5rem; color: var(--win-gold); text-transform: uppercase; letter-spacing: 2px;">Tournament Registration</h2>
+            <div style="width: 60px; height: 4px; background: var(--action-orange); margin: 10px auto;"></div>
+            <p style="opacity: 0.7; margin-top: 10px;">Register your team to compete in the ultimate arena.</p>
+            <div id="dbStatus" style="margin-top:10px; font-size:0.8rem; opacity:0.6;">
+                <i class="fas fa-database"></i> Connecting to database...
+            </div>
+        </div>
+
+        <!-- Wallet Gate -->
+        <div id="wallet-gate" style="display:flex;">
+            <div class="w3-gate-icon">🦊</div>
+            <h4>Wallet Required to Register</h4>
+            <p>Connect your MetaMask wallet to secure your spot in The Urban Open. <br><span style="color:var(--win-gold);font-size:0.85rem;">✅ Simulated payment — no real ETH needed!</span></p>
+            <button class="w3-connect-btn" onclick="connectWallet()" style="margin-top:8px; font-size:0.85rem;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" class="w3-fox-icon" alt="MM">
+                Connect MetaMask to Register
+            </button>
+        </div>
+
+        <div class="reg-container">
+            <div class="section-box">
+                <h3 style="margin-bottom: 25px; color: var(--accent-blue);"><i class="fas fa-user-plus"></i> Player Details</h3>
+                <form id="regForm" class="decongested-form" style="opacity:0.35; pointer-events:none;" onsubmit="handleRegistrationSubmit(event)">
+                    <label style="font-size: 0.85rem; opacity: 0.8; font-weight: bold;">PLAYER NAME</label>
+                    <input type="text" id="playerName" placeholder="e.g. Alex Rivera" required>
+                    <label style="font-size: 0.85rem; opacity: 0.8; font-weight: bold;">GAME ID</label>
+                    <input type="text" id="gameId" placeholder="e.g. Ace_007" required>
+                    <label style="font-size: 0.85rem; opacity: 0.8; font-weight: bold;">TEAM NAME</label>
+                    <input type="text" id="teamName" placeholder="e.g. Cyber Knights" required>
+                    <button type="submit" id="reg-pay-btn" class="btn" style="width: 100%; margin-top: 15px;" disabled>
+                        <i class="fas fa-trophy"></i> Pay 0.001 ETH & Register
+                    </button>
+                    <p style="font-size:0.72rem; opacity:0.5; text-align:center; margin-top:10px;">
+                        Simulated payment · Stored in SQLite Database
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-bottom">&copy; 2026 The Urban Open. All Rights Reserved.</div>
+    </footer>
+
+    <script>
+        const API = '/api';
+
+        async function checkDB() {
+            try {
+                const res = await fetch(`${API}/registrations`);
+                if (res.ok) {
+                    document.getElementById('dbStatus').innerHTML = '<i class="fas fa-database" style="color:#00ff88;"></i> <span style="color:#00ff88;">SQLite Database Connected ✅</span>';
+                }
+            } catch(e) {
+                document.getElementById('dbStatus').innerHTML = '<i class="fas fa-database" style="color:#ef4444;"></i> <span style="color:#ef4444;">Backend offline — run: py server.py</span>';
+            }
+        }
+
+        // READ ALL
+        async function displayParticipants() {
+            const listContainer = document.getElementById('participantsList');
+            const countDisplay = document.getElementById('playerCount');
+            if (!listContainer || !countDisplay) return; // Participants box removed from this page
+            try {
+                const res = await fetch(`${API}/registrations`);
+                const data = await res.json();
+                const participants = data.registrations || [];
+                countDisplay.innerText = participants.length;
+
+                if (participants.length === 0) {
+                    listContainer.innerHTML = "<div style='text-align:center; opacity:0.5; padding:40px;'><i class='fas fa-users-slash' style='font-size:2rem;'></i><p>No players registered yet.</p></div>";
+                    return;
+                }
+                listContainer.innerHTML = '';
+                participants.forEach(player => {
+                    const div = document.createElement('div');
+                    div.className = 'participant-card';
+                    div.innerHTML = `
+                        <div>
+                            <strong style="color:var(--accent-blue); font-size:1.05rem;">${player.player_name}</strong><br>
+                            <small style="opacity:0.8;">Team: ${player.team_name} | ID: ${player.game_id}</small><br>
+                            <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">
+                                <div class="wallet-badge">🦊 MetaMask</div>
+                                <div class="sim-badge">💳 Simulated Paid</div>
+                                <div class="api-badge">🗄️ DB Stored</div>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:5px;">
+                            <button class="btn-edit" onclick="openEdit(${player.id},'${player.player_name}','${player.game_id}','${player.team_name}')"><i class="fas fa-pen"></i></button>
+                            <button class="btn-delete" onclick="removePlayer(${player.id})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                    listContainer.appendChild(div);
+                });
+            } catch(e) {
+                listContainer.innerHTML = "<div style='text-align:center;color:#ef4444;padding:20px;'><i class='fas fa-exclamation-triangle'></i> Cannot connect to backend.<br><small>Run: py server.py</small></div>";
+            }
+        }
+
+        // FORM SUBMIT → MetaMask simulated payment
+        async function handleRegistrationSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('reg-pay-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            const playerData = {
+                name: document.getElementById('playerName').value,
+                id: document.getElementById('gameId').value,
+                team: document.getElementById('teamName').value
+            };
+
+            const success = await processRegistrationPayment(playerData);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-trophy"></i> Pay 0.001 ETH & Register';
+            if (success) {
+                document.getElementById('regForm').reset();
+                displayParticipants();
+            }
+        }
+
+        // DELETE
+        async function removePlayer(id) {
+            if (!confirm('Remove this player?')) return;
+            try {
+                const res = await fetch(`${API}/registrations/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                showToast(res.ok ? 'Player removed!' : data.error, res.ok ? 'success' : 'error');
+                if (res.ok) displayParticipants();
+            } catch(e) { showToast('Backend offline', 'error'); }
+        }
+
+        // EDIT
+        function openEdit(id, name, gameId, team) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editName').value = name;
+            document.getElementById('editGameId').value = gameId;
+            document.getElementById('editTeam').value = team;
+            document.getElementById('editModal').classList.add('active');
+        }
+        function closeModal() { document.getElementById('editModal').classList.remove('active'); }
+
+        // UPDATE
+        async function saveEdit() {
+            const id = document.getElementById('editId').value;
+            const payload = {
+                player_name: document.getElementById('editName').value,
+                game_id: document.getElementById('editGameId').value,
+                team_name: document.getElementById('editTeam').value
+            };
+            try {
+                const res = await fetch(`${API}/registrations/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                showToast(res.ok ? 'Updated!' : data.error, res.ok ? 'success' : 'error');
+                if (res.ok) { closeModal(); displayParticipants(); }
+            } catch(e) { showToast('Backend offline', 'error'); }
+        }
+
+        function showToast(msg, type='info') {
+            const existing = document.querySelector('.reg-toast');
+            if (existing) existing.remove();
+            const icons = { success:'✅', error:'❌', info:'ℹ️' };
+            const t = document.createElement('div');
+            t.className = 'reg-toast';
+            t.style.cssText = 'position:fixed;bottom:30px;right:30px;z-index:99999;background:var(--card-bg);border:1px solid var(--border-color);padding:14px 22px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.3);font-size:0.95rem;display:flex;gap:10px;align-items:center;';
+            t.innerHTML = `${icons[type]||'ℹ️'} ${msg}`;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 4000);
+        }
+
+        const toggleListBtn = document.getElementById('toggleListBtn');
+        if (toggleListBtn) {
+            toggleListBtn.addEventListener('click', () => {
+                const lw = document.getElementById('listWrapper');
+                if (lw.style.display === 'none') { lw.style.display = 'block'; toggleListBtn.textContent = 'Hide List'; }
+                else { lw.style.display = 'none'; toggleListBtn.textContent = 'Show List'; }
+            });
+        }
+
+        
+
+        checkDB();
+        displayParticipants();
+    </script>
+    <script src="metamask.js"></script>
+  <script src="theme.js"></script>
+  <script src="auth.js"></script>
+  <script src="nav-init.js"></script>
+</body>
+</html>
